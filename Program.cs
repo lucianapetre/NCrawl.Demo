@@ -11,9 +11,15 @@ namespace NCrawler.Demo
 	{
 		#region Class Methods
 
+        const string subDomains = "/info/";
+        const string babyBrands = "-sassy-|-man-|-munchkin-|-role-play-";
+
 		public static IFilter[] ExtensionsToSkip = new[]
 			{
-				(RegexFilter)new Regex(@"(\.jpg|\.css|\.js|\.gif|\.jpeg|\.png|\.ico)",
+				(RegexFilter)new Regex(@"(\.jpg|\.css|\.js|\.gif|\.jpeg|\.png|\.ico|"+
+                                       subDomains+"|"+
+                                       babyBrands+
+                                       ")",
 					RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase)
 			};
 
