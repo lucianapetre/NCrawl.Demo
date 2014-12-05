@@ -60,6 +60,9 @@
     <Reference Include="Autofac">
       <HintPath>..\Repository\Autofac\Autofac.dll</HintPath>
     </Reference>
+    <Reference Include="EPPlus">
+      <HintPath>..\packages\EPPlus.4.0.1.1\lib\net20\EPPlus.dll</HintPath>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.4.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Repository\HtmlAgilityPack\HtmlAgilityPack.dll</HintPath>
@@ -88,6 +91,7 @@
     <Compile Include="CrawlUsingEsentStorage.cs" />
     <Compile Include="CrawlUsingIsolatedStorage.cs" />
     <Compile Include="CrawlUsingSQLiteDbStorage.cs" />
+    <Compile Include="DataManager.cs" />
     <Compile Include="Extensions\TextWriterExtensions.cs" />
     <Compile Include="FindBrokenLinksDemo.cs" />
     <Compile Include="IndexerDemo.cs" />
@@ -161,6 +165,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

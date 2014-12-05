@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 
 using NCrawler.Interfaces;
 using NCrawler.Services;
+using OfficeOpenXml;
 
 namespace NCrawler.Demo
 {
@@ -32,34 +33,37 @@ namespace NCrawler.Demo
 			ServicePointManager.CheckCertificateRevocationList = true;
 			ServicePointManager.EnableDnsRoundRobin = true;
 
+            DataManager XLSData = new DataManager();
+            XLSData.readXLSFile();
+
 			// Run demo 1
 			SimpleCrawlDemo.Run();
 
-			// Run demo 2
-			CrawlUsingIsolatedStorage.Run();
+//            // Run demo 2
+//            CrawlUsingIsolatedStorage.Run();
 
-			// Run demo 3
-			CrawlUsingDb4oStorage.Run();
+//            // Run demo 3
+//            CrawlUsingDb4oStorage.Run();
 
-			// Run demo 4
-			CrawlUsingEsentStorage.Run();
+//            // Run demo 4
+//            CrawlUsingEsentStorage.Run();
 
-			// Run demo 5
-			CrawlUsingDbStorage.Run();
+//            // Run demo 5
+//            CrawlUsingDbStorage.Run();
 
-#if DOTNET4
-			// Run demo 4
-			CrawlUsingSQLiteDbStorage.Run();
-#endif
+//#if DOTNET4
+//            // Run demo 4
+//            CrawlUsingSQLiteDbStorage.Run();
+//#endif
 
-			// Run demo 6
-			IndexerDemo.Run();
+//            // Run demo 6
+//            IndexerDemo.Run();
 
-			// Run demo 7
-			FindBrokenLinksDemo.Run();
+//            // Run demo 7
+//            FindBrokenLinksDemo.Run();
 
-			// Run demo 8
-			AdvancedCrawlDemo.Run();
+//            // Run demo 8
+//            AdvancedCrawlDemo.Run();
 
 			Console.Out.WriteLine("\nDone!");
 		}
