@@ -33,8 +33,9 @@ namespace NCrawler.Demo
 			ServicePointManager.CheckCertificateRevocationList = true;
 			ServicePointManager.EnableDnsRoundRobin = true;
 
-            DataManager XLSData = new DataManager();
-            XLSData.readXLSFile();
+            sProduct product = new sProduct("test", "id3", "ww.cmo", 12.5m);
+            DataManager.Instance.pushProduct(product);
+            //XLSData.readXLSFile();
 
 			// Run demo 1
 			SimpleCrawlDemo.Run();
