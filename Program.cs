@@ -33,7 +33,7 @@ namespace NCrawler.Demo
 			ServicePointManager.CheckCertificateRevocationList = true;
 			ServicePointManager.EnableDnsRoundRobin = true;
 
-            sProduct product = new sProduct("test", "id3", "ww.cmo", 12.5m);
+            sProduct product = new sProduct("test", "IDX123", "ww.cmo", 12.5m);
             DataManager.Instance.pushProduct(product);
             //XLSData.readXLSFile();
 

@@ -10,7 +10,7 @@ namespace NCrawler.Demo
     class DataManager
     {
         DirectoryInfo outputDir = new DirectoryInfo(@"e:\Tests\EMagProducts\");
-        const string XLSFileName = "EmagProducts1.xlsx";
+        const string XLSFileName = "EmagProducts.xlsx";
         private List<sProduct> m_lProducts = new List<sProduct>();
 
         ExcelPackage m_XLSPackage = new ExcelPackage();
@@ -47,8 +47,8 @@ namespace NCrawler.Demo
                 {
                     m_XLSPackage = new ExcelPackage(newFile);
                     m_XLSPackage.Workbook.Worksheets.Add("Products");
+                    m_WorkSheet = m_XLSPackage.Workbook.Worksheets["Products"];
                     addXLSSchema();
-                    addDummyProducts();
                     m_XLSPackage.Save();
                 }
                 else
@@ -67,34 +67,45 @@ namespace NCrawler.Demo
 
         private void addXLSSchema()
         {
-            if (true == m_bFileOk)
-            {
-                m_WorkSheet.Cells["A1"].Value = "Name";
-                m_WorkSheet.Cells["B1"].Value = "ID";
-                m_WorkSheet.Cells["C1"].Value = "URL";
-                m_WorkSheet.Cells["D1"].Value = "Price";
-            }
+            m_WorkSheet.Cells["A1"].Value = "Name";
+            m_WorkSheet.Cells["B1"].Value = "ID";
+            m_WorkSheet.Cells["C1"].Value = "URL";
+            m_WorkSheet.Cells["D1"].Value = "Price";
         }
 
-        private void addDummyProducts()
+        private void addDummyProduct()
         {
-            if (true == m_bFileOk)
-            {
-                m_WorkSheet.Cells["A2"].Value = "CD Manele";
-                m_WorkSheet.Cells["B2"].Value = "IDX123";
-                m_WorkSheet.Cells["C2"].Value = "www.indulap.ro/test2";
-                m_WorkSheet.Cells["D2"].Value = "55";
-            }
+            m_WorkSheet.Cells["A2"].Value = "CD Manele";
+            m_WorkSheet.Cells["B2"].Value = "IDX123";
+            m_WorkSheet.Cells["C2"].Value = "www.indulap.ro/test2";
+            m_WorkSheet.Cells["D2"].Value = "55";
         }
 
         public eProductStat pushProduct(sProduct newProduct)
         {
             eProductStat retVal = eProductStat.PRODUCT_NOACTION;
 
-            ExcelRow productRow = getProductById(newProduct.Id);
-            
-            //if(null != productRow)
-            //{
+            ExcelAddress productAddress = getProductById(newProduct.Id);
+
+            int priceOffset = 2;//id pos 2 price pos 4 then offset 2
+
+            for (priceOffset = 2; priceOffset < 15; priceOffset++)
+            {
+                if (m_WorkSheet.Cells[productAddress.Address].Offset(0, priceOffset).GetValue<string>() == null)
+                {
+                    break;
+                }
+                else 
+                {
+                    Console.WriteLine("Price {0} for {1}", productAddress.Address, m_WorkSheet.Cells[productAddress.Address].Offset(0, priceOffset).GetValue<string>());
+                }
+            }
+
+            priceOffset -= 1;
+
+
+            if (null != productAddress)
+            {
             //    if (newProduct.Price != productRow.['price'])
             //    {
             //        retVal = eProductStat.PRODUCT_UPDATE_OK;
@@ -103,22 +114,22 @@ namespace NCrawler.Demo
             //            retVal = eProductStat.PRODUCT_UPDATE_ERR;
             //        }
             //    }
-            //}
-            //else 
-            //{
+            }
+            else 
+            {
             //    retVal = eProductStat.PRODUCT_INSERT_OK;
             //    if(true != insertNewProduct(newProduct))
             //    {
             //        retVal = eProductStat.PRODUCT_INSERT_ERR;
             //    }
-            //}
+            }
 
             return retVal;
         }
 
-        private ExcelRow getProductById(string productId)
+        private ExcelAddress getProductById(string productId)
         {
-            //Select product by id in column b
+            ExcelAddress retVal = new ExcelAddress("A1");
             try
             {
                 var pQuery = (from cell in m_WorkSheet.Cells["b:b"]
@@ -127,6 +138,7 @@ namespace NCrawler.Demo
                               select cell);
                 foreach (var cell in pQuery)
                 {
+                    retVal = cell; 
                     Console.WriteLine("Cell {0} has value {1} Name is {2}", cell.Address, cell.Value, cell.Offset(0, -1).GetValue<string>());
                 }
             }
@@ -135,7 +147,7 @@ namespace NCrawler.Demo
                 Console.WriteLine(ex.ToString());
             }
 
-            return null;
+            return retVal;
         }
     }
 }
