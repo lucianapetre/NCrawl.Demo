@@ -19,6 +19,9 @@ namespace NCrawler.Demo
 
         private static DataManager m_Instance;
 
+        //number of products
+        int m_lastRow = 1;
+
         private DataManager()
         {
             m_bFileOk = openXLSFile();
@@ -67,6 +70,7 @@ namespace NCrawler.Demo
 
         private void addXLSSchema()
         {
+            m_lastRow++;
             m_WorkSheet.Cells["A1"].Value = "Name";
             m_WorkSheet.Cells["B1"].Value = "ID";
             m_WorkSheet.Cells["C1"].Value = "URL";
@@ -75,6 +79,7 @@ namespace NCrawler.Demo
 
         private void addDummyProduct()
         {
+            m_lastRow++;
             m_WorkSheet.Cells["A2"].Value = "CD Manele";
             m_WorkSheet.Cells["B2"].Value = "IDX123";
             m_WorkSheet.Cells["C2"].Value = "www.indulap.ro/test2";
@@ -87,41 +92,35 @@ namespace NCrawler.Demo
 
             ExcelAddress productAddress = getProductById(newProduct.Id);
 
-            int priceOffset = 2;//id pos 2 price pos 4 then offset 2
-
-            for (priceOffset = 2; priceOffset < 15; priceOffset++)
+            if (productAddress.Address == "")//no product 
             {
-                if (m_WorkSheet.Cells[productAddress.Address].Offset(0, priceOffset).GetValue<string>() == null)
-                {
-                    break;
-                }
-                else 
-                {
-                    Console.WriteLine("Price {0} for {1}", productAddress.Address, m_WorkSheet.Cells[productAddress.Address].Offset(0, priceOffset).GetValue<string>());
-                }
+                m_lastRow++;
+                m_WorkSheet.Cells["A" + m_lastRow.ToString()].Value = newProduct.Name;
+                m_WorkSheet.Cells["B" + m_lastRow.ToString()].Value = newProduct.Id;
+                m_WorkSheet.Cells["C" + m_lastRow.ToString()].Value = newProduct.URL;
+                m_WorkSheet.Cells["D" + m_lastRow.ToString()].Value = newProduct.Price;
             }
-
-            priceOffset -= 1;
-
-
-            if (null != productAddress)
+            else
             {
-            //    if (newProduct.Price != productRow.['price'])
-            //    {
-            //        retVal = eProductStat.PRODUCT_UPDATE_OK;
-            //        if(true != updateProductPrice(newProduct))
-            //        {
-            //            retVal = eProductStat.PRODUCT_UPDATE_ERR;
-            //        }
-            //    }
-            }
-            else 
-            {
-            //    retVal = eProductStat.PRODUCT_INSERT_OK;
-            //    if(true != insertNewProduct(newProduct))
-            //    {
-            //        retVal = eProductStat.PRODUCT_INSERT_ERR;
-            //    }
+                int priceOffset = 2;//productId pos 2 productPrice pos 4 then offset 2
+
+                for (priceOffset = 2; priceOffset < 15; priceOffset++)
+                {
+                    if (m_WorkSheet.Cells[productAddress.Address].Offset(0, priceOffset).GetValue<string>() == null)
+                    {
+                        priceOffset -= 1;
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Price cell {0} is {1}", productAddress.Address, m_WorkSheet.Cells[productAddress.Address].Offset(0, priceOffset).GetValue<string>());
+                    }
+                }
+                if (m_WorkSheet.Cells[productAddress.Address].Offset(0, priceOffset).GetValue<decimal>() != newProduct.Price)
+                {
+                    m_WorkSheet.Cells[productAddress.Address].Offset(0, priceOffset + 1).Value = newProduct.Price;
+                    retVal = eProductStat.PRODUCT_INSERT_OK;
+                }
             }
 
             return retVal;
@@ -129,7 +128,7 @@ namespace NCrawler.Demo
 
         private ExcelAddress getProductById(string productId)
         {
-            ExcelAddress retVal = new ExcelAddress("A1");
+            ExcelAddress retVal = new ExcelAddress("");
             try
             {
                 var pQuery = (from cell in m_WorkSheet.Cells["b:b"]
